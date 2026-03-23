@@ -1,204 +1,211 @@
+// ======== DATA ========
 let currentUser = localStorage.getItem("user");
 let usersData = JSON.parse(localStorage.getItem("usersData") || "{}");
 const ownerName = "RevvNight";
 
-// HTML elements
-const auth = document.getElementById("auth");
-const username = document.getElementById("username");
-const chatUI = document.getElementById("chatUI");
-const chat = document.getElementById("chat");
-const input = document.getElementById("input");
-const topUsers = document.getElementById("topUsers");
-const adminTools = document.getElementById("adminTools");
-const banUser = document.getElementById("banUser");
-const newAdminUser = document.getElementById("newAdminUser");
-const friendsList = document.getElementById("friendsList");
-const friendChatBox = document.getElementById("friendChatBox");
-const chatWith = document.getElementById("chatWith");
-const privateChat = document.getElementById("privateChat");
-const friendInput = document.getElementById("friendInput");
-const searchUser = document.getElementById("searchUser");
-const searchResults = document.getElementById("searchResults");
-const imgPrompt = document.getElementById("imgPrompt");
-
-// INIT
-if (currentUser) {
-    showChat();
-    renderFriendsList();
-    updateLeaderboard();
-}
-
-// REGISTER / LOGIN
-function register() {
-    let user = username.value.trim();
-    if (!user) return alert("Isi username dulu!");
-    if (!usersData[user]) {
-        usersData[user] = { admin: user===ownerName, coins:0, premium:false, imageCount:0, friends:[], messages:{} };
-        localStorage.setItem("usersData", JSON.stringify(usersData));
-    }
-    localStorage.setItem("user", user);
-    currentUser = user;
-    showChat();
-    renderFriendsList();
-    updateLeaderboard();
-}
-
-// LOGOUT
-function logout() {
-    localStorage.removeItem("user");
-    location.reload();
-}
-
-// SHOW CHAT UI
-function showChat() {
-    auth.style.display = "none";
-    chatUI.style.display = "block";
-    adminTools.style.display = usersData[currentUser].admin ? "block":"none";
-}
-
-// CHAT AI
-function send() {
-    let text = input.value.trim();
-    if (!text) return;
-    usersData[currentUser].coins++;
-    localStorage.setItem("usersData", JSON.stringify(usersData));
-    chat.innerHTML += `<div class="userBubble">${text}</div>`;
-    input.value="";
-    chat.scrollTop = chat.scrollHeight;
-    setTimeout(()=>{
-        let res = ai(text);
-        if (usersData[currentUser].premium) res+=" ✨ (Premium)";
-        chat.innerHTML += `<div class="botBubble">${res}</div>`;
-        chat.scrollTop = chat.scrollHeight;
-        updateLeaderboard();
-    }, usersData[currentUser].premium ? 200:500);
-}
-
-function ai(text) {
-    text=text.toLowerCase();
-    if (!text.includes("roblox")) return "Aku fokus Roblox 😄 tapi tetap temenin kamu 😊";
-    if (text.includes("game")) return "Coba buat simulator atau tycoon Roblox 🔥";
-    return "Menarik! Jelaskan lebih detail ya 😎";
-}
-
-// ADMIN
-function ban() {
-    let target = banUser.value.trim();
-    if (!usersData[target]) return alert("User tidak ditemukan");
-    delete usersData[target];
-    localStorage.setItem("usersData", JSON.stringify(usersData));
-    alert(`${target} telah dibanned 🚫`);
-    updateLeaderboard();
-    renderFriendsList();
-}
-
-function makeAdmin() {
-    if (currentUser!==ownerName) return alert("Hanya owner bisa tambah admin!");
-    let target = newAdminUser.value.trim();
-    if (!target || !usersData[target]) return alert("User tidak ditemukan!");
-    usersData[target].admin = true;
-    localStorage.setItem("usersData", JSON.stringify(usersData));
-    alert(`${target} sekarang ADMIN ✅`);
-    updateLeaderboard();
-    renderFriendsList();
-}
-
-// LEADERBOARD
-function updateLeaderboard() {
-    let sorted = Object.entries(usersData).sort((a,b)=>b[1].coins-a[1].coins);
-    topUsers.innerHTML="";
-    sorted.forEach(([user,data])=>{
-        let badge = data.admin?" <span class='adminBadge'>✔️</span>":"";
-        let prem = data.premium?" <span class='premiumBadge'>🔥</span>":"";
-        topUsers.innerHTML += `<li>${user}${badge}${prem} - ${data.coins} 💰</li>`;
-    });
-}
-
-// IMAGE GENERATOR
-function generateImage() {
-    let prompt = imgPrompt.value.trim();
-    if (!prompt) return;
-    if (!usersData[currentUser].premium && usersData[currentUser].imageCount>=5)
-        return alert("Batas generate gambar harian 5. Upgrade premium!");
-    if (!usersData[currentUser].premium) usersData[currentUser].imageCount++;
-    localStorage.setItem("usersData", JSON.stringify(usersData));
-
-    let img = new Image();
-    img.src="https://picsum.photos/200"; 
-    img.onload=()=>{
-        let canvas=document.createElement("canvas");
-        let ctx=canvas.getContext("2d");
-        canvas.width=img.width; canvas.height=img.height;
-        ctx.drawImage(img,0,0);
-        ctx.fillStyle="white"; ctx.font="20px Arial";
-        ctx.fillText("Revan AI",10,img.height-10);
-        chat.innerHTML += `<div class="botBubble"><img src="${canvas.toDataURL()}" style="max-width:200px;border-radius:10px;"></div>`;
-        chat.scrollTop=chat.scrollHeight;
+// ======== LOGIN ========
+if(currentUser) showChat();
+function register(){
+  let user = document.getElementById("username").value.trim();
+  if(!user) return alert("Isi username!");
+  if(!usersData[user]){
+    usersData[user] = {
+      admin:user===ownerName,
+      coins:0,
+      premium:false,
+      friends:[],
+      messages:{},
+      bio:""
     };
-}
-
-// FRIEND SYSTEM
-function searchUserFunc() {
-    let name=searchUser.value.trim();
-    searchResults.innerHTML="";
-    if (!usersData[name]) { searchResults.innerHTML="User tidak ditemukan 😢"; return; }
-    if (name===currentUser) { searchResults.innerHTML="Ini kamu sendiri 😄"; return; }
-    let btn=document.createElement("button");
-    btn.textContent="Add Friend ➕";
-    btn.onclick=()=>addFriend(name);
-    searchResults.appendChild(document.createTextNode(name+" "));
-    searchResults.appendChild(btn);
-}
-
-function addFriend(name) {
-    if (usersData[currentUser].friends.includes(name)) return alert("User sudah temanmu 😎");
-    usersData[currentUser].friends.push(name);
-    if (!usersData[name].friends.includes(currentUser)) usersData[name].friends.push(currentUser);
-    if (!usersData[currentUser].messages[name]) usersData[currentUser].messages[name]=[];
-    if (!usersData[name].messages[currentUser]) usersData[name].messages[currentUser]=[];
-    localStorage.setItem("usersData", JSON.stringify(usersData));
-    alert(name+" sekarang temanmu ✅");
-    renderFriendsList();
-}
-
-function renderFriendsList() {
-    friendsList.innerHTML="";
-    usersData[currentUser].friends.forEach(f=>{
-        let li=document.createElement("li");
-        li.textContent=f;
-        li.style.cursor="pointer";
-        li.onclick=()=>openFriendChat(f);
-        friendsList.appendChild(li);
-    });
-}
-
-let currentFriend=null;
-function openFriendChat(friend) {
-    currentFriend=friend;
-    friendChatBox.style.display="block";
-    chatWith.textContent="Chat dengan: "+friend;
-    renderFriendChat();
-}
-
-function renderFriendChat() {
-    if (!currentFriend) return;
-    privateChat.innerHTML="";
-    let msgs=usersData[currentUser].messages[currentFriend]||[];
-    msgs.forEach(m=>{
-        let div=document.createElement("div");
-        div.textContent=`${m.from}: ${m.text}`;
-        privateChat.appendChild(div);
-    });
-    privateChat.scrollTop=privateChat.scrollHeight;
-}
-
-function sendFriendMessage() {
-    if (!currentFriend) return;
-    let text=friendInput.value.trim();
-    if (!text) return;
-    usersData[currentUser].messages[currentFriend].push({from:currentUser,text:text});
-    usersData[currentFriend].messages[currentUser].push({from:currentUser,text:text});
-    localStorage.setItem("usersData", JSON.stringify(usersData));
-    friendInput.value="";
-    renderFriendChat();
   }
+  localStorage.setItem("usersData", JSON.stringify(usersData));
+  localStorage.setItem("user", user);
+  currentUser = user;
+  showChat();
+}
+
+// ======== LOGOUT ========
+function logout(){
+  localStorage.removeItem("user");
+  location.reload();
+}
+
+// ======== DASHBOARD ========
+function showChat(){
+  document.getElementById("auth").style.display="none";
+  document.getElementById("chatUI").style.display="block";
+  if(usersData[currentUser].admin) document.getElementById("adminPanel").style.display="block";
+  renderFriends();
+  updateLeaderboard();
+}
+
+// ======== SEARCH USER ========
+function filterUsers(){
+  let val = document.getElementById("searchUser").value.toLowerCase();
+  renderFriends(val);
+}
+function renderFriends(filter=""){
+  let list = document.getElementById("friendsList");
+  list.innerHTML = "";
+  Object.keys(usersData).forEach(u=>{
+    if(u!==currentUser && u.toLowerCase().includes(filter)){
+      let li = document.createElement("li");
+      li.textContent = u;
+      li.onclick = ()=>openFriendChat(u);
+      list.appendChild(li);
+    }
+  });
+}
+
+// ======== FRIEND CHAT ========
+let currentFriend = null;
+function openFriendChat(friend){
+  currentFriend = friend;
+  document.getElementById("friendChatBox").style.display="block";
+  document.getElementById("chatWith").textContent = "Chat dengan: "+friend;
+  if(!usersData[currentUser].messages[friend]) usersData[currentUser].messages[friend]=[];
+  if(!usersData[friend].messages[currentUser]) usersData[friend].messages[currentUser]=[];
+  renderFriendChat();
+}
+function sendFriendMessage(){
+  if(!currentFriend) return;
+  let text = document.getElementById("friendInput").value.trim();
+  if(!text) return;
+  usersData[currentUser].messages[currentFriend].push({from:currentUser,text:text});
+  usersData[currentFriend].messages[currentUser].push({from:currentUser,text:text});
+  localStorage.setItem("usersData",JSON.stringify(usersData));
+  document.getElementById("friendInput").value="";
+  renderFriendChat();
+}
+function renderFriendChat(){
+  if(!currentFriend) return;
+  let msgs = usersData[currentUser].messages[currentFriend]||[];
+  let box = document.getElementById("privateChat");
+  box.innerHTML="";
+  msgs.forEach(m=>{
+    let div = document.createElement("div");
+    div.textContent = `${m.from}: ${m.text}`;
+    box.appendChild(div);
+  });
+  box.scrollTop = box.scrollHeight;
+}
+
+// ======== CHAT AI ========
+let aiOpen = false;
+function toggleAI(){
+  aiOpen = !aiOpen;
+  document.getElementById("input").focus();
+}
+async function sendMessage(){
+  let text = document.getElementById("input").value.trim();
+  if(!text) return;
+  if(!usersData[currentUser].premium){
+    alert("Upgrade ke premium dulu 😢\nFitur AI hanya untuk premium!");
+    return;
+  }
+
+  usersData[currentUser].coins++;
+  document.getElementById("chat").innerHTML += `<div class="userBubble">${text}</div>`;
+  document.getElementById("input").value="";
+  document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight;
+
+  let botDiv = document.createElement("div");
+  botDiv.className = "botBubble";
+  botDiv.textContent = "🤖 Mencari informasi...";
+  document.getElementById("chat").appendChild(botDiv);
+  document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight;
+
+  let response = await fetchInfo(text);
+  botDiv.textContent = response;
+  document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight;
+}
+
+// Simulasi fetch info dari internet
+function fetchInfo(query){
+  return new Promise((resolve)=>{
+    let found = Math.random() > 0.3;
+    let delay = 5000 + Math.random()*10000; // 5-15 detik
+    if(delay>15000) delay = 15000;
+    setTimeout(()=>{
+      if(found) resolve(`Info ditemukan untuk "${query}" ✅\nSimulasi hasil pencarian Roblox`);
+      else resolve("Maaf informasi saat ini tidak ditemukan 😢");
+    }, delay);
+  });
+}
+
+// ======== PREMIUM IMAGE & VIDEO ========
+function createImageAI(prompt){
+  if(!usersData[currentUser].premium){
+    alert("Upgrade ke premium dulu 😢");
+    return;
+  }
+  return `Gambar AI: "${prompt}" 🎨 (tanpa watermark)`;
+}
+function createVideoAI(prompt){
+  if(!usersData[currentUser].premium){
+    alert("Upgrade ke premium dulu 😢");
+    return;
+  }
+  return `Video AI: "${prompt}" 🎬`;
+}
+
+// ======== LEADERBOARD ========
+function updateLeaderboard(){
+  let sorted = Object.entries(usersData).sort((a,b)=>b[1].coins-a[1].coins);
+  let topUsers = document.getElementById("friendsList");
+  topUsers.innerHTML="";
+  sorted.forEach(([user,data])=>{
+    let badge = data.admin?" ✔️":"";
+    let prem = data.premium?" 🔥":"";
+    let li = document.createElement("li");
+    li.textContent = `${user}${badge}${prem} - ${data.coins}💰`;
+    topUsers.appendChild(li);
+  });
+}
+
+// ======== ADMIN PANEL ========
+function giveCoins(){
+  let u = document.getElementById("giveCoinsUser").value.trim();
+  let amt = parseInt(document.getElementById("giveCoinsAmount").value);
+  if(!usersData[u]||isNaN(amt)) return alert("Input salah!");
+  usersData[u].coins+=amt;
+  localStorage.setItem("usersData",JSON.stringify(usersData));
+  updateLeaderboard();
+  alert("Coins diberikan ✅");
+}
+function givePremium(){
+  let u = document.getElementById("givePremiumUser").value.trim();
+  if(!usersData[u]) return alert("User tidak ada!");
+  usersData[u].premium=true;
+  localStorage.setItem("usersData",JSON.stringify(usersData));
+  alert(`${u} sekarang premium ✅`);
+}
+function giveAdmin(){
+  let u = document.getElementById("giveAdminUser").value.trim();
+  if(!usersData[u]) return alert("User tidak ada!");
+  usersData[u].admin=true;
+  localStorage.setItem("usersData",JSON.stringify(usersData));
+  updateLeaderboard();
+  alert("Admin diberikan ✅");
+}
+function banUserFunc(){
+  let u = document.getElementById("banUserInput").value.trim();
+  if(!usersData[u]) return alert("User tidak ada!");
+  delete usersData[u];
+  localStorage.setItem("usersData",JSON.stringify(usersData));
+  updateLeaderboard();
+  alert("User dibanned ✅");
+}
+
+// ======== REPORT SYSTEM ========
+let reports=[];
+function reportClient(from,text){reports.push({from,text}); renderReports();}
+function renderReports(){
+  let rList = document.getElementById("reportsList");
+  rList.innerHTML="";
+  reports.forEach(r=>{
+    let li = document.createElement("li");
+    li.textContent = `${r.from}: ${r.text}`;
+    rList.appendChild(li);
+  });
+      }
