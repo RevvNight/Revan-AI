@@ -8,68 +8,57 @@
 </head>
 <body>
 
-<!-- LOGIN / REGISTER -->
+<!-- LOGIN -->
 <div id="auth" class="center">
-  <h1>Revan AI 🔶</h1>
-  <input id="username" placeholder="Username">
-  <button onclick="register()">Daftar / Login</button>
+<h1>Revan AI 🔶</h1>
+<input id="username" placeholder="Username">
+<button onclick="register()">Daftar / Login</button>
 </div>
 
-<!-- CHAT UI -->
+<!-- DASHBOARD -->
 <div id="chatUI">
-  <div id="topBar">
-    <h2>Revan AI 🔶</h2>
-    <div id="leaderboard">
-      <h3>Leaderboard 🏆</h3>
-      <ol id="topUsers"></ol>
-    </div>
-  </div>
-
-  <div id="chat"></div>
-
-  <div class="inputBox">
-    <input id="input" placeholder="Ketik pesan ke Revan...">
-    <button onclick="send()">➤</button>
-  </div>
-
-  <!-- Admin tools -->
-  <div id="adminTools">
-    <input id="banUser" placeholder="Ban user">
-    <button onclick="ban()">Ban</button>
-    <input id="newAdminUser" placeholder="Username jadi admin">
-    <button onclick="makeAdmin()">Tambahkan Admin</button>
-  </div>
-
-  <!-- Premium -->
-  <div id="premiumBox">
-    <button onclick="buyPremium()">Beli Premium 💎</button>
-  </div>
-
-  <!-- Image Generator -->
-  <div id="imageGen">
-    <input id="imgPrompt" placeholder="Generate gambar...">
-    <button onclick="generateImage()">Buat Gambar</button>
-  </div>
-
-  <!-- Friends -->
-  <div id="friendsSection">
-    <h3>Temanmu 👥</h3>
-    <input id="searchUser" placeholder="Cari username...">
-    <button onclick="searchUserFunc()">Cari</button>
-    <div id="searchResults"></div>
-    <h4>Daftar Teman:</h4>
-    <ul id="friendsList"></ul>
-    <div id="friendChatBox">
-      <h4 id="chatWith"></h4>
-      <div id="privateChat"></div>
-      <input id="friendInput" placeholder="Kirim pesan ke teman...">
-      <button onclick="sendFriendMessage()">Kirim</button>
-    </div>
-  </div>
-
-  <button onclick="logout()" id="logoutBtn">Logout</button>
+<div id="topBar">
+<h2>Revan AI 🔶</h2>
 </div>
+
+<!-- SEARCH & CHAT LIST -->
+<div id="sidebar">
+<input id="searchUser" placeholder="Cari username..." onkeyup="filterUsers()">
+<ul id="friendsList"></ul>
+
+<!-- Admin Panel -->
+<div id="adminPanel">
+<h4>Admin Panel</h4>
+<input id="giveCoinsUser" placeholder="Username Coins"><input id="giveCoinsAmount" placeholder="Jumlah"><button onclick="giveCoins()">Give Coins</button><br>
+<input id="givePremiumUser" placeholder="Username Premium"><input id="givePremiumDays" placeholder="Durasi Hari"><button onclick="givePremium()">Give Premium</button><br>
+<input id="giveAdminUser" placeholder="Username Admin"><button onclick="giveAdmin()">Give Admin</button><br>
+<input id="banUserInput" placeholder="Username Ban"><input id="banDays" placeholder="Durasi Hari"><button onclick="banUserFunc()">Ban</button><br>
+<h5>Laporan Client:</h5>
+<ul id="reportsList"></ul>
+</div>
+</div>
+
+<!-- CHAT AREA -->
+<div id="chatArea">
+<div id="chat"></div>
+<div class="inputBox">
+<input id="input" placeholder="Ketik pesan...">
+<button onclick="sendMessage()">➤</button>
+</div>
+</div>
+
+<!-- AI BUTTON -->
+<button id="aiBtn" onclick="toggleAI()">🤖</button>
+
+<!-- FRIEND CHAT -->
+<div id="friendChatBox">
+<h4 id="chatWith"></h4>
+<div id="privateChat"></div>
+<input id="friendInput" placeholder="Kirim pesan ke teman..."><button onclick="sendFriendMessage()">Kirim</button>
+</div>
+
+<button onclick="logout()">Logout</button>
 
 <script src="script.js"></script>
 </body>
-      </html>
+</html>
