@@ -3,29 +3,37 @@ body {
     background-color: #fff5e6;
     margin: 0;
     padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    flex-direction: column;
 }
 
 h1 {
     font-family: 'Arial Black', Arial, sans-serif;
     text-shadow: 1px 1px 3px #ff8c1a;
+    text-align: center;
 }
 
 #loginContainer, #registerContainer, #chatContainer {
+    width: 95%;
     max-width: 500px;
-    margin: auto;
-    margin-top: 50px;
+    margin: 10px;
     border: 2px solid #ffa500;
     border-radius: 10px;
     padding: 15px;
     background-color: #fff;
+    box-sizing: border-box;
 }
 
 input {
-    width: 95%;
+    width: 100%;
     padding: 10px;
     margin: 5px 0;
     border-radius: 5px;
     border: 1px solid #ffa500;
+    box-sizing: border-box;
 }
 
 button {
@@ -36,6 +44,7 @@ button {
     color: white;
     border-radius: 5px;
     cursor: pointer;
+    width: 100%;
 }
 
 button:hover {
@@ -45,11 +54,12 @@ button:hover {
 #chatContainer {
     display: flex;
     flex-direction: column;
+    height: 80vh;
 }
 
 #messages {
-    height: 400px;
-    overflow-y: scroll;
+    flex: 1;
+    overflow-y: auto;
     border: 1px solid #ffa500;
     padding: 5px;
     margin-bottom: 10px;
@@ -81,6 +91,7 @@ button:hover {
 
 #inputContainer {
     display: flex;
+    gap: 5px;
 }
 
 #userInput {
@@ -88,4 +99,28 @@ button:hover {
     padding: 10px;
     border-radius: 5px;
     border: 1px solid #ffa500;
+    box-sizing: border-box;
 }
+
+#msgMenu div:hover {
+    background-color: #ffa500;
+    color: white;
+    border-radius: 3px;
+}
+
+@media (max-width: 600px) {
+    #chatContainer, #loginContainer, #registerContainer {
+        width: 95%;
+        padding: 10px;
+    }
+    button, #userInput {
+        padding: 12px;
+        font-size: 16px;
+    }
+}
+
+@media (min-width: 1200px) {
+    #chatContainer, #loginContainer, #registerContainer {
+        max-width: 600px;
+    }
+        }
