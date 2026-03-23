@@ -3,36 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Revan AI Login</title>
+<title>Revan AI by Aditya</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+<h1 style="text-align:center; color:#ffa500; margin-top:20px;">Revan AI by Aditya</h1>
+
 <div id="loginContainer">
-    <h3>Login Revan AI</h3>
-    <label>Pilih Negara / Bahasa:</label>
-    <select id="countrySelect">
-        <option value="en">English - US</option>
-        <option value="id">Indonesia - ID</option>
-        <option value="fr">France - FR</option>
-        <option value="es">Spain - ES</option>
-        <option value="de">Germany - DE</option>
-        <option value="zh">China - CN</option>
-        <option value="ja">Japan - JP</option>
-        <option value="ko">Korea - KR</option>
-        <option value="ru">Russia - RU</option>
-    </select>
-    <br><br>
+    <h3>Login</h3>
+    <input type="text" id="loginUsername" placeholder="Username">
+    <input type="password" id="loginPassword" placeholder="Password">
     <button id="loginBtn">Login</button>
+    <p>Belum punya akun? <span id="showRegister" style="color:#ffa500; cursor:pointer;">Daftar</span></p>
 </div>
 
-<script>
-document.getElementById("loginBtn").addEventListener("click", () => {
-    const lang = document.getElementById("countrySelect").value;
-    localStorage.setItem("userLang", lang); // simpan bahasa
-    window.location.href = "ai.html"; // pindah ke chat
-});
-</script>
+<div id="registerContainer" style="display:none;">
+    <h3>Daftar Akun</h3>
+    <input type="text" id="regUsername" placeholder="Username">
+    <input type="password" id="regPassword" placeholder="Password">
+    <button id="registerBtn">Daftar</button>
+    <p>Sudah punya akun? <span id="showLogin" style="color:#ffa500; cursor:pointer;">Login</span></p>
+</div>
 
+<script src="script.js"></script>
 </body>
 </html>
