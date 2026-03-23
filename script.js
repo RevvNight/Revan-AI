@@ -1,71 +1,85 @@
-// ===== DATA =====
-let currentUser = localStorage.getItem("user");
-let usersData = JSON.parse(localStorage.getItem("usersData") || "{}");
-const ownerName = "RevvNight";
+// Ambil bahasa dari login
+let userLang = localStorage.getItem("userLang") || "en";
 
-// ===== LOGIN =====
-if(currentUser && window.location.pathname.includes("ai.html")) showChat();
-
-function login(){
-  let user = document.getElementById("username").value.trim();
-  if(!user) return alert("Isi username!");
-  if(!usersData[user]){
-    usersData[user] = {
-      admin:user===ownerName
-    };
-    localStorage.setItem("usersData",JSON.stringify(usersData));
-  }
-  localStorage.setItem("user",user);
-  currentUser = user;
-  window.location.href = "ai.html";
+// Simulasi pencarian info
+function fetchInfoFromWeb(query) {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve(`Ini informasi yang aku temukan tentang "${query}"`);
+        }, 1500);
+    });
 }
 
-// ===== LOGOUT =====
-function logout(){localStorage.removeItem("user");window.location.href="index.html";}
-
-// ===== CHAT AI =====
-async function sendMessage(){
-  let text = document.getElementById("input").value.trim();
-  if(!text) return;
-  document.getElementById("input").value="";
-
-  // tampil user bubble
-  document.getElementById("chat").innerHTML += `<div class="userBubble">${text}</div>`;
-  document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight;
-
-  // tampil loading
-  let botDiv = document.createElement("div");
-  botDiv.className="botBubble";
-  botDiv.textContent = "🤖 Revan AI sedang mencari informasi...";
-  document.getElementById("chat").appendChild(botDiv);
-  document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight;
-
-  // proses AI (simulasi cepat max 5 detik)
-  let response = await fetchAI(text);
-  botDiv.textContent = response;
-  document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight;
+// Translate pakai LibreTranslate API
+async function translateToUser(text, targetLang) {
+    if(targetLang === "en") return text;
+    try {
+        const res = await fetch('https://libretranslate.com/translate', {
+            method:'POST',
+            body: JSON.stringify({q: text, source: 'en', target: targetLang}),
+            headers: {'Content-Type':'application/json'}
+        });
+        const data = await res.json();
+        return data.translatedText;
+    } catch(e){
+        return text;
+    }
 }
 
-// ===== SIMULASI AI =====
-function fetchAI(query){
-  return new Promise(resolve=>{
-    let delay = 1000 + Math.random()*4000; // 1-5 detik
-    setTimeout(()=>{
-      resolve(`Revan AI 💡:\nInfo/Script/Gambar/Video Roblox untuk: "${query}"`);
-    }, delay);
-  });
+// Fungsi AI
+async function getAIResponse(message) {
+    const msg = message.toLowerCase().trim();
+
+    // salam cepat
+    if (msg === "hii" || msg === "hai" || msg === "hello") {
+        return await translateToUser("HII", userLang);
+    }
+
+    // pertanyaan pencipta
+    if (msg.includes("siapa penciptamu") || msg.includes("siapa yang membuatmu")) {
+        return await translateToUser("Aditya atau RevvNight", userLang);
+    }
+
+    // pertanyaan pendek / receh
+    if (msg.length < 5) {
+        const jokes = [
+            "Haha lucu banget!",
+            "Wkwk bener juga 😆",
+            "Eh jangan gitu dong 😅"
+        ];
+        const joke = jokes[Math.floor(Math.random() * jokes.length)];
+        return await translateToUser(joke, userLang);
+    }
+
+    // pertanyaan info
+    appendMessage(await translateToUser("Sedang mencari informasi....", userLang), "ai");
+    const result = await fetchInfoFromWeb(message);
+    return await translateToUser(result, userLang);
 }
 
-// ===== IMAGE & VIDEO GRATIS =====
-function createImageAI(prompt){
-  return `Gambar AI: "${prompt}" 🎨 (Kualitas bagus, unlimited)`;
+// Tambah pesan ke chat
+function appendMessage(text, sender) {
+    const messages = document.getElementById("messages");
+    const div = document.createElement("div");
+    div.className = `message ${sender}`;
+    div.textContent = text;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
 }
 
-function createVideoAI(prompt){
-  return `Video AI: "${prompt}" 🎬 (Kualitas bagus, unlimited)`;
-}
+// Event send button
+document.getElementById("sendBtn").addEventListener("click", async () => {
+    const input = document.getElementById("userInput");
+    const message = input.value.trim();
+    if(!message) return;
+    appendMessage(message, "user");
+    input.value = "";
 
-// ===== SHOW CHAT (ketika reload ai.html) =====
-function showChat(){
-  if(!currentUser) return window.location.href="index.html";
-}
+    const reply = await getAIResponse(message);
+    appendMessage(reply, "ai");
+});
+
+// Enter key
+document.getElementById("userInput").addEventListener("keypress", async (e) => {
+    if(e.key === "Enter") document.getElementById("sendBtn").click();
+});
