@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Revan AI 🤖</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Revan AI 🤖</h1>
+
+<div id="auth">
+  <input id="username" placeholder="Username">
+  <input id="password" type="password" placeholder="Password">
+  <button onclick="register()">Daftar</button>
+  <button onclick="login()">Login</button>
+</div>
+
+<div id="chatUI" style="display:none;">
+  <div id="chat"></div>
+
+  <input id="input" placeholder="Tanya Roblox / curhat">
+  <button onclick="send()">Kirim</button>
+
+  <br><br>
+
+  <input type="file" id="uploadImg">
+  <button onclick="showImage()">Upload</button>
+
+  <br><br>
+
+  <input id="imgPrompt" placeholder="Generate gambar">
+  <button onclick="generateImage()">Buat</button>
+
+  <br><br>
+
+  <button onclick="logout()">Logout</button>
+</div>
+
+<div id="adminPanel" style="display:none;">
+  <input id="banUser" placeholder="Ban user">
+  <button onclick="ban()">Ban</button>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
