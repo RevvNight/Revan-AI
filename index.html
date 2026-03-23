@@ -3,15 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Revan AI Login 🔥</title>
+<title>Revan AI Login</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="center">
-<h1>Revan AI 🔥</h1>
-<input id="username" placeholder="Username">
-<button onclick="login()">Masuk</button>
+
+<div id="loginContainer">
+    <h3>Login Revan AI</h3>
+    <label>Pilih Negara / Bahasa:</label>
+    <select id="countrySelect">
+        <option value="en">English - US</option>
+        <option value="id">Indonesia - ID</option>
+        <option value="fr">France - FR</option>
+        <option value="es">Spain - ES</option>
+        <option value="de">Germany - DE</option>
+        <option value="zh">China - CN</option>
+        <option value="ja">Japan - JP</option>
+        <option value="ko">Korea - KR</option>
+        <option value="ru">Russia - RU</option>
+    </select>
+    <br><br>
+    <button id="loginBtn">Login</button>
 </div>
-<script src="script.js"></script>
+
+<script>
+document.getElementById("loginBtn").addEventListener("click", () => {
+    const lang = document.getElementById("countrySelect").value;
+    localStorage.setItem("userLang", lang); // simpan bahasa
+    window.location.href = "ai.html"; // pindah ke chat
+});
+</script>
+
 </body>
 </html>
