@@ -1,47 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-  <title>Revan AI 🤖</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revan AI 🔶</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>Revan AI 🤖</h1>
-
-<div id="auth">
+<!-- LOGIN / REGISTER -->
+<div id="auth" class="center">
+  <h1>Revan AI 🔶</h1>
   <input id="username" placeholder="Username">
-  <input id="password" type="password" placeholder="Password">
-  <button onclick="register()">Daftar</button>
-  <button onclick="login()">Login</button>
+  <button onclick="register()">Daftar / Login</button>
 </div>
 
-<div id="chatUI" style="display:none;">
+<!-- CHAT UI -->
+<div id="chatUI">
+  <div id="topBar">
+    <h2>Revan AI 🔶</h2>
+    <div id="leaderboard">
+      <h3>Leaderboard 🏆</h3>
+      <ol id="topUsers"></ol>
+    </div>
+  </div>
+
   <div id="chat"></div>
 
-  <input id="input" placeholder="Tanya Roblox / curhat">
-  <button onclick="send()">Kirim</button>
+  <div class="inputBox">
+    <input id="input" placeholder="Ketik pesan ke Revan...">
+    <button onclick="send()">➤</button>
+  </div>
 
-  <br><br>
+  <!-- Admin tools -->
+  <div id="adminTools">
+    <input id="banUser" placeholder="Ban user">
+    <button onclick="ban()">Ban</button>
+    <input id="newAdminUser" placeholder="Username jadi admin">
+    <button onclick="makeAdmin()">Tambahkan Admin</button>
+  </div>
 
-  <input type="file" id="uploadImg">
-  <button onclick="showImage()">Upload</button>
+  <!-- Premium -->
+  <div id="premiumBox">
+    <button onclick="buyPremium()">Beli Premium 💎</button>
+  </div>
 
-  <br><br>
+  <!-- Image Generator -->
+  <div id="imageGen">
+    <input id="imgPrompt" placeholder="Generate gambar...">
+    <button onclick="generateImage()">Buat Gambar</button>
+  </div>
 
-  <input id="imgPrompt" placeholder="Generate gambar">
-  <button onclick="generateImage()">Buat</button>
+  <!-- Friends -->
+  <div id="friendsSection">
+    <h3>Temanmu 👥</h3>
+    <input id="searchUser" placeholder="Cari username...">
+    <button onclick="searchUserFunc()">Cari</button>
+    <div id="searchResults"></div>
+    <h4>Daftar Teman:</h4>
+    <ul id="friendsList"></ul>
+    <div id="friendChatBox">
+      <h4 id="chatWith"></h4>
+      <div id="privateChat"></div>
+      <input id="friendInput" placeholder="Kirim pesan ke teman...">
+      <button onclick="sendFriendMessage()">Kirim</button>
+    </div>
+  </div>
 
-  <br><br>
-
-  <button onclick="logout()">Logout</button>
-</div>
-
-<div id="adminPanel" style="display:none;">
-  <input id="banUser" placeholder="Ban user">
-  <button onclick="ban()">Ban</button>
+  <button onclick="logout()" id="logoutBtn">Logout</button>
 </div>
 
 <script src="script.js"></script>
-
 </body>
-</html>
+      </html>
