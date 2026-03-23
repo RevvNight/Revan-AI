@@ -3,62 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Revan AI 🔶</title>
+<title>Revan AI Login 🔥</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<!-- LOGIN -->
-<div id="auth" class="center">
-<h1>Revan AI 🔶</h1>
+<div class="center">
+<h1>Revan AI 🔥</h1>
 <input id="username" placeholder="Username">
-<button onclick="register()">Daftar / Login</button>
+<button onclick="login()">Masuk</button>
 </div>
-
-<!-- DASHBOARD -->
-<div id="chatUI">
-<div id="topBar">
-<h2>Revan AI 🔶</h2>
-</div>
-
-<!-- SEARCH & CHAT LIST -->
-<div id="sidebar">
-<input id="searchUser" placeholder="Cari username..." onkeyup="filterUsers()">
-<ul id="friendsList"></ul>
-
-<!-- Admin Panel -->
-<div id="adminPanel">
-<h4>Admin Panel</h4>
-<input id="giveCoinsUser" placeholder="Username Coins"><input id="giveCoinsAmount" placeholder="Jumlah"><button onclick="giveCoins()">Give Coins</button><br>
-<input id="givePremiumUser" placeholder="Username Premium"><input id="givePremiumDays" placeholder="Durasi Hari"><button onclick="givePremium()">Give Premium</button><br>
-<input id="giveAdminUser" placeholder="Username Admin"><button onclick="giveAdmin()">Give Admin</button><br>
-<input id="banUserInput" placeholder="Username Ban"><input id="banDays" placeholder="Durasi Hari"><button onclick="banUserFunc()">Ban</button><br>
-<h5>Laporan Client:</h5>
-<ul id="reportsList"></ul>
-</div>
-</div>
-
-<!-- CHAT AREA -->
-<div id="chatArea">
-<div id="chat"></div>
-<div class="inputBox">
-<input id="input" placeholder="Ketik pesan...">
-<button onclick="sendMessage()">➤</button>
-</div>
-</div>
-
-<!-- AI BUTTON -->
-<button id="aiBtn" onclick="toggleAI()">🤖</button>
-
-<!-- FRIEND CHAT -->
-<div id="friendChatBox">
-<h4 id="chatWith"></h4>
-<div id="privateChat"></div>
-<input id="friendInput" placeholder="Kirim pesan ke teman..."><button onclick="sendFriendMessage()">Kirim</button>
-</div>
-
-<button onclick="logout()">Logout</button>
-
 <script src="script.js"></script>
 </body>
 </html>
